@@ -49,9 +49,17 @@ export default function Home({ posts }: Props) {
                                    transition duration-500 group-hover:scale-110 ease-in-out"
                                />
                             </div>
-                            <div>
-                                <h1 className="text-2xl font-bold text-primaryColor group-hover:text-secondaryColor">{post.title}</h1>
-                                <p className="text-sm text-gray-500">{post.description}</p>
+                            <div className="h-2/5 w-full flex flex-col justify-center">
+                                <div className="flex justify-between items-enter px-4 py-1 border-b-[1px] border-b-gray-500">
+                                    <p className="text-2xl font-bold text-primaryColor group-hover:text-secondaryColor">{post.title}</p>
+                                    <img src={urlFor(post.author.image).url()!} alt={post.author.name}
+                                         className="w-10 h-10 rounded-full" />
+                                </div>
+                                <p className="text-sm text-gray-500">{post.description.substring(0, 80)}... -
+                                    <span className="italic">by
+                                        <span className="font-semibold">{post.author.name}</span>
+                                    </span>
+                                </p>
                             </div>
                         </div>
                     </Link>
