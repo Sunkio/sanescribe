@@ -6,6 +6,7 @@ import {sanityClient, urlFor} from "../../sanity";
 import {GetStaticProps} from "next";
 import {Post} from "../../typings";
 import PortableText from "react-portable-text";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 
 interface Props {
@@ -21,7 +22,7 @@ const Post = ({post}: Props) => {
                 src={urlFor(post.mainImage).url()!}
                 className="w-full h-96 object-cover"
             />
-            <div className="max-w-3xl mx-auto">
+            <div className="max-w-3xl mx-auto mb-10">
                <article className="w-full mx-auto p-5 bg-secondaryColor/10 sm:px-6 lg:px-8 py-8">
                 <h1 className="font-titleFont font-medium text-[32px] text-primary border-b-[1px] border-b-cyan-800
                 mt-10 mb-3">
@@ -84,6 +85,36 @@ const Post = ({post}: Props) => {
                        />
                    </div>
                 </article>
+                <hr className="max-w-lg my-5 mx-auto border[1px] border-secondaryColor" />
+                <div>
+                    <p className="text-xs text-secondaryColor uppercase font-titleFont font-bold">Enjoyed this article?</p>
+                    <h3 className="font-titleFont text-3xl font-bold">Leave a comment below!</h3>
+                </div>
+                <hr className="py-3 mt-2" />
+                <form className="mt-7 flex flex-col gap-6">
+                    <label className="flex flex-col" >
+                        <span className="font-titleFont font-semibold text-base">Name</span>
+                        <input className="text-base placeholder:text-sm border-b-[1px] border-secondaryColor py-1 py-4
+                        outline-none focus-within:shadow-xl shadow-secondaryColor" type="text" name="name"
+                               placeholder="Enter your name"/>
+                    </label>
+                    <label className="flex flex-col" >
+                        <span className="font-titleFont font-semibold text-base">Email</span>
+                        <input className="text-base placeholder:text-sm border-b-[1px] border-secondaryColor py-1 py-4
+                        outline-none focus-within:shadow-xl shadow-secondaryColor" type="email" name="email"
+                               placeholder="Enter your Email"/>
+                    </label>
+                    <label className="flex flex-col" >
+                        <span className="font-titleFont font-semibold text-base">Comment</span>
+                        <textarea className="text-base placeholder:text-sm border-b-[1px] border-secondaryColor py-1 py-4
+                        outline-none focus-within:shadow-xl shadow-secondaryColor" name="email"
+                               placeholder="Enter your Comment" rows={6}
+                        />
+                    </label>
+                    <button className="bg-secondaryColor text-white font-titleFont font-semibold tracking-wider text-lg uppercase py-2 px-4 rounded-md hover:bg-secondaryColor/80 duration-300">
+                        Submit
+                    </button>
+                </form>
             </div>
             <Footer />
         </div>
