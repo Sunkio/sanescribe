@@ -44,7 +44,7 @@ export default function Home({ posts }: Props) {
                                    alt={post.title}
                                    width={380}
                                    height={350}
-                                   src={urlFor(post.mainImage).url()!}
+                                   src={urlFor(post.mainImage).url()}
                                    className="w-full h-full object-cover brightness-75 group-hover:brightness-100
                                    transition duration-500 group-hover:scale-110 ease-in-out"
                                />
