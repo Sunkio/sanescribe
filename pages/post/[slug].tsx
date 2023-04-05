@@ -7,13 +7,37 @@ import {GetStaticProps} from "next";
 import {Post} from "../../typings";
 import PortableText from "react-portable-text";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useState } from "react";
 
 
 interface Props {
     post: Post;
 }
+    type Inputs={
+        _id: string;
+        name: string;
+        email: string;
+        comment: string;
+}
+
 
 const Post = ({post}: Props) => {
+    const {register, handleSubmit, formState: {errors}} = useForm<Inputs>();
+    const [submitted, setSubmitted] = useState(false);
+
+    const onSubmit: SubmitHandler<Inputs> = data => {
+        fetch("/api/createComment", {
+                method: "POST",
+                body: JSON.stringify(data),
+            })
+            .then(() => {
+                setSubmitted(true);
+            })
+            .catch((error) => {
+                setSubmitted(false);
+        });
+    };
+
     return (
         <div>
             <Header />
@@ -76,7 +100,7 @@ const Post = ({post}: Props) => {
                                                 </li>
                                             ),
                                          link: ({href, children}: any) => (
-                                                <a href={{href}} target="_blank" rel="noopener noreferrer"
+                                                <a href={href} target="_blank" rel="noopener noreferrer"
                                                    className="text-cyan-500 hover:underline">
                                                     {children}
                                                 </a>
@@ -91,23 +115,32 @@ const Post = ({post}: Props) => {
                     <h3 className="font-titleFont text-3xl font-bold">Leave a comment below!</h3>
                 </div>
                 <hr className="py-3 mt-2" />
-                <form className="mt-7 flex flex-col gap-6">
+                <input {...register("_id")} type="hidden" name="_id" value={post._id} />
+                <form onSubmit={handleSubmit(onSubmit)} className="mt-7 flex flex-col gap-6">
                     <label className="flex flex-col" >
                         <span className="font-titleFont font-semibold text-base">Name</span>
-                        <input className="text-base placeholder:text-sm border-b-[1px] border-secondaryColor py-1 py-4
+                        <input
+                        {...register("name", { required: true })}
+                            className="text-base placeholder:text-sm border-b-[1px] border-secondaryColor py-1 py-4
                         outline-none focus-within:shadow-xl shadow-secondaryColor" type="text" name="name"
-                               placeholder="Enter your name"/>
+                               placeholder="Enter your name"
+                        />
                     </label>
                     <label className="flex flex-col" >
                         <span className="font-titleFont font-semibold text-base">Email</span>
-                        <input className="text-base placeholder:text-sm border-b-[1px] border-secondaryColor py-1 py-4
+                        <input
+                        {...register("email", { required: true })}
+                            className="text-base placeholder:text-sm border-b-[1px] border-secondaryColor py-1 py-4
                         outline-none focus-within:shadow-xl shadow-secondaryColor" type="email" name="email"
-                               placeholder="Enter your Email"/>
+                               placeholder="Enter your Email"
+                        />
                     </label>
                     <label className="flex flex-col" >
                         <span className="font-titleFont font-semibold text-base">Comment</span>
-                        <textarea className="text-base placeholder:text-sm border-b-[1px] border-secondaryColor py-1 py-4
-                        outline-none focus-within:shadow-xl shadow-secondaryColor" name="email"
+                        <textarea
+                        {...register("comment", { required: true })}
+                            className="text-base placeholder:text-sm border-b-[1px] border-secondaryColor py-1 py-4
+                        outline-none focus-within:shadow-xl shadow-secondaryColor" name="comment"
                                placeholder="Enter your Comment" rows={6}
                         />
                     </label>
@@ -115,6 +148,20 @@ const Post = ({post}: Props) => {
                         Submit
                     </button>
                 </form>
+                <div className="w-full flex flex-col p-10 my-10 mx-auto shadow-bgColor shadow-lg space-y-2">
+                    <h3 className="text-3xl font-titleFont font-semibold">Comments</h3>
+                    <hr />
+                    {
+                        post.comments.length > 0 ? (  post.comments.map((comment: Comment) => {
+                            return (
+                                <div key={comment._id} className="flex flex-col gap-2">
+                                    <p><span>{comment.name}</span></p>
+                                    <p>{comment.comment}</p>
+                                </div>);
+                        })) : (<p>No comments yet</p>)
+
+                    }
+                </div>
             </div>
             <Footer />
         </div>
@@ -153,6 +200,7 @@ export const getStaticProps: GetStaticProps = async ({params}) => {
             name,
             image
         },
+        "comments": *[_type == "comment" && post._ref == ^._id && approved == true],
         description,
         mainImage,
         slug,
