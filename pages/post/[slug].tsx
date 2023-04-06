@@ -18,6 +18,7 @@ interface Props {
         name: string;
         email: string;
         comment: string;
+        publishedAt: string;
 }
 
 
@@ -144,6 +145,8 @@ const Post = ({post}: Props) => {
                                placeholder="Enter your Comment" rows={6}
                         />
                     </label>
+                    <input {...register("publishedAt")} type="hidden" name="_publishedAt" value={new Date().toISOString()} />
+
                     <button className="bg-secondaryColor text-white font-titleFont font-semibold tracking-wider text-lg uppercase py-2 px-4 rounded-md hover:bg-secondaryColor/80 duration-300">
                         Submit
                     </button>
@@ -151,7 +154,20 @@ const Post = ({post}: Props) => {
                 <div className="w-full flex flex-col p-10 my-10 mx-auto shadow-bgColor shadow-lg space-y-2">
                     <h3 className="text-3xl font-titleFont font-semibold">Comments</h3>
                     <hr />
-                    {
+                    {post.comments.map((comment) => (
+                        <div key={comment._id} className="flex flex-col gap-2">
+                            <p>
+                                <span className="font-semibold text-secondaryColor">{comment.name}</span>{" "}
+                                <span className="italic">
+                                    {comment.publishedAt?.slice(0, 16) && `(${comment.publishedAt?.slice(0, 16)
+                                    .replace("T", ", ")})`}
+                                </span>
+                            </p>
+                            <p>{comment.comment}</p>
+                        </div>
+                    ))
+                    }
+                    {/*{
                         post.comments.length > 0 ? (  post.comments.map((comment: Comment) => {
                             return (
                                 <div key={comment._id} className="flex flex-col gap-2">
@@ -160,7 +176,7 @@ const Post = ({post}: Props) => {
                                 </div>);
                         })) : (<p>No comments yet</p>)
 
-                    }
+                    */}
                 </div>
             </div>
             <Footer />

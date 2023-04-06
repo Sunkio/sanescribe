@@ -14,7 +14,7 @@ export default async function createComment(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { _id, name, email, comment } = JSON.parse(req.body);
+  const { _id, name, email, comment, publishedAt } = JSON.parse(req.body);
 
   try {
     await client.create({
@@ -25,7 +25,9 @@ export default async function createComment(
       },
       name,
       email,
-      comment
+      comment,
+      publishedAt,
+
 
     });
   } catch (error) {

@@ -24,6 +24,11 @@ export default defineType({
             type: 'text',
         }),
         defineField({
+            name: 'publishedAt',
+            title: 'Published at',
+            type: 'datetime',
+        }),
+        defineField({
             name: 'post',
             type: 'reference',
             to: {type: 'post'},
