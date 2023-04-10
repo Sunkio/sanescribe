@@ -10,6 +10,7 @@
     "@sanity/client": "^5.4.2",
     "@sanity/image-url": "^1.0.2",
     "next": "latest",
+    "next-auth": "^4.21.1",
     "next-sanity": "^4.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
