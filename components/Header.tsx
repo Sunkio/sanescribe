@@ -16,15 +16,16 @@ const Header = () => {
         </Link>
         <div>
           <ul className=" lg:inline-flex gap-8 uppercase text-sm font-semibold">
-            <li className="headerLi">Home</li>
-            <li className="headerLi">Posts</li>
-            <li className="headerLi">Pages</li>
-            <li className="headerLi">Features</li>
+            <li className="headerLi"><Link href="/">Home</Link></li>
+            <li className="headerLi">Beginners</li>
+            <li className="headerLi">Grow Your Blog</li>
+            <li className="headerLi">Work & Life</li>
+            <li className="headerLi">About Me</li>
             <li className="headerLi">Contact</li>
           </ul>
         </div>
         <div className="flex items-center gap-8 text-lg">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 pl-2">
             <img
               className="w-8 h-8 rounded-full"
               src={
