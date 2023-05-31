@@ -12,9 +12,9 @@ module.exports = {
         titleFont: "Montserrat",
       },
       colors: {
-        primaryColor: "#111111",
-        secondaryColor: "#9b59b6",
-        bgColor: "#34495e",
+        primaryColor: "#090C1C",
+        secondaryColor: "#f10081",
+        bgColor: "#564D54",
       },
       boxShadow: {
         btnShadow: "0px 0px 18px 3px rgba(52,73,94,1)",

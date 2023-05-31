@@ -1,9 +1,7 @@
 import Image from "next/image";
 import logoNt from "../public/images/logoNt.png";
 import {
-  BsFacebook,
   BsTwitter,
-  BsYoutube,
   BsLinkedin,
   BsGithub,
 } from "react-icons/bs";
