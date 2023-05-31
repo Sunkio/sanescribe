@@ -4,14 +4,14 @@ import logo from "../public/images/logo.png";
 import { useSession, signIn, signOut } from "next-auth/react";
 
 const Header = () => {
-  const {data:session} = useSession();
+  const { data:session } = useSession();
 
   return (
     <div className="w-full h-20 border-b-[1px] border-b-black font-titleFont sticky top-0 bg-white z-50 px-4">
       <div className="max-w-7xl h-full mx-auto flex justify-between items-center">
         <Link href="/">
           <div>
-            <Image  height={80} src={logo} alt="logo" />
+            <Image  height={60} src={logo} alt="logo" />
           </div>
         </Link>
         <div>

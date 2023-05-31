@@ -18,8 +18,8 @@ export default function Home({ posts }: Props) {
   return (
     <div>
       <Head>
-        <title>My Blog | Explore the new horizon</title>
-        <link rel="icon" href="/smallLogo.ico" />
+        <title>SaneScribe | A Next.JS Blog Template</title>
+        <link rel="icon" href="favicon.ico?v=2" />
       </Head>
 
       <main className="font-bodyFont">
