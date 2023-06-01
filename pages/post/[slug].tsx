@@ -3,14 +3,12 @@ import Header from "../../components/Header";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import {sanityClient, urlFor} from "../../sanity";
-import {GetStaticProps} from "next";
+import { GetServerSidePropsContext } from 'next';
 import {Category, Post} from "../../typings";
 import PortableText from "react-portable-text";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import category from '../../cms/schemas/category'
-
 
 interface Props {
     post: Post;
@@ -228,7 +226,7 @@ const Post = ({post, categories}: Props) => {
 
 export default Post;
 
-export const getServerSideProps = async ({ params }) => {
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
   const postQuery = `*[_type == "post" && slug.current == $slug][0]{
       _id,
       publishedAt,
@@ -248,7 +246,7 @@ export const getServerSideProps = async ({ params }) => {
     _id }`);
 
   const post = await sanityClient.fetch(postQuery, {
-    slug: params?.slug,
+    slug: context.params?.slug,
   });
 
   if (!post) {
