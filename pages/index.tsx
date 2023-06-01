@@ -91,7 +91,7 @@ export const getServerSideProps = async () => {
     }`;
     const posts = await sanityClient.fetch(query);
 
-    const categories = await client.fetch(`*[_type == "category"]{ title, description, slug, 
+    const categories = await client.fetch(`*[_type == "category"] | order(order asc){ title, description, slug, 
       _id }`);
     
     console.log('Fetched categories:', categories);

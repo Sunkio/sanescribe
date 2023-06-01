@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import {sanityClient, urlFor} from "../../sanity";
 import {GetStaticProps} from "next";
-import {Post} from "../../typings";
+import {Category, Post} from "../../typings";
 import PortableText from "react-portable-text";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
@@ -14,6 +14,7 @@ import category from '../../cms/schemas/category'
 
 interface Props {
     post: Post;
+    categories: Category[];
 }
 
 type Inputs={
@@ -25,7 +26,7 @@ type Inputs={
 }
 
 
-const Post = ({post}: Props) => {
+const Post = ({post, categories}: Props) => {
     const {data:session} = useSession();
     const [userErr, setUserErr] = useState("");
     const {register, handleSubmit, formState: {errors}} = useForm<Inputs>();
@@ -54,7 +55,7 @@ const Post = ({post}: Props) => {
 
     return (
         <div>
-            <Header categories={category}/>
+            <Header categories={categories}/>
             <img
                 alt={post.title}
                 src={urlFor(post.mainImage).url()!}
@@ -227,56 +228,39 @@ const Post = ({post}: Props) => {
 
 export default Post;
 
-export const getStaticPaths = async () => {
-    const query = `*[_type == "post"]{
-        _id,
-        slug {
-            current
-        }
-    }`;
+export const getServerSideProps = async ({ params }) => {
+  const postQuery = `*[_type == "post" && slug.current == $slug][0]{
+      _id,
+      publishedAt,
+      title,
+      author -> {
+          name,
+          image
+      },
+      "comments": *[_type == "comment" && post._ref == ^._id && approved == true],
+      description,
+      mainImage,
+      slug,
+      body,
+  }`;
 
-    const posts = await sanityClient.fetch(query);
+  const categories = await sanityClient.fetch(`*[_type == "category"] | order(order asc){ title, description, slug, 
+    _id }`);
 
-    const paths = posts.map((post: Post) => ({
-        params: {
-            slug: post.slug.current,
-        },
-    }));
+  const post = await sanityClient.fetch(postQuery, {
+    slug: params?.slug,
+  });
+
+  if (!post) {
     return {
-        paths,
-        fallback: "blocking",
+      notFound: true,
     };
-};
+  }
 
-export const getStaticProps: GetStaticProps = async ({params}) => {
-    const query = `*[_type == "post" && slug.current == $slug][0]{
-        _id,
-        publishedAt,
-        title,
-        author -> {
-            name,
-            image
-        },
-        "comments": *[_type == "comment" && post._ref == ^._id && approved == true],
-        description,
-        mainImage,
-        slug,
-        body,
-    }`;
-
-    const post = await sanityClient.fetch(query, {
-        slug:params?.slug,
-    });
-
-    if(!post) {
-        return {
-            notFound: true,
-        };
-    }
-    return {
-        props: {
-            post,
-        },
-        revalidate: 60,
-    };
+  return {
+    props: {
+      post,
+      categories: categories || [],
+    },
+  };
 };

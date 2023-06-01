@@ -2,9 +2,15 @@ import Image from "next/image";
 import Link from "next/link";
 import logo from "../public/images/logo.png";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { Category } from "../typings";
 //import { client } from "../lib/client";
 
-const Header = ({ categories }) => {
+interface HeaderProps {
+  categories: Array<Category>;
+  fallback?: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ categories, fallback }) => {
   const { data:session } = useSession();
 
   return (
@@ -18,14 +24,17 @@ const Header = ({ categories }) => {
         <div>
           <ul className=" lg:inline-flex gap-8 uppercase text-sm font-semibold">
             <li className="headerLi"><Link href="/">Home</Link></li>
-             {categories.map((category) => (
-          <li key={category._id} className="headerLi">
-            <Link href={`/category/${category.slug.current}`}>
-              {category.title}
-            </Link>
-          </li>
-        ))}
-
+            {
+              (!fallback && categories && categories.length > 0)
+                ? categories.map((category) => (
+                    <li key={category._id} className="headerLi">
+                      <Link href={`/category/${category.slug.current}`}>
+                        {category.title}
+                      </Link>
+                    </li>
+                  ))
+                : null
+            }
             <li className="headerLi">About Me</li>
             <li className="headerLi">Contact</li>
           </ul>

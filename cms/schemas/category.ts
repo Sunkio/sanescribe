@@ -24,5 +24,10 @@ export default defineType({
         maxLength: 96,
       }
     }),
+    defineField({
+      title: "Order",
+      name: "order",
+      type: "number",
+    })
   ],
 })

@@ -16,15 +16,21 @@ interface Props {
 
 const CategoryPage: React.FC<Props> = ({ posts, category, allCategories }: Props) => {
    console.log("Posts for category:", posts);
-  const router = useRouter();
+ const isFallback = useRouter().isFallback;
 
-  if (router.isFallback) {
-    return <div>Loading...</div>;
+  if (isFallback) {
+    return (
+      <>
+        <Header categories={allCategories} fallback={isFallback} />
+        <div>Loading...</div>
+        <Footer />
+      </>
+    );
   }
 
   return (
     <>
-      <Header categories={allCategories} />
+      <Header categories={allCategories || []} />
       <h1>{category.title}</h1>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 py-6 px-4">
             {
@@ -79,14 +85,13 @@ export async function getStaticProps(context: GetStaticPropsContext) {
   const slug = context.params?.slug;
 
   // Fetch all categories
-  const allCategories: Category[] = await sanityClient.fetch(`*[_type == "category"]`);
+  const allCategories: Category[] = await sanityClient.fetch(`*[_type == "category"] | order(order asc)`);
 
   // Fetch the category with the given slug
   const category: Category = await sanityClient.fetch(`*[_type == "category" && slug.current == $slug][0]`, {
     slug,
   });
 
-  // Fetch the posts related to the fetched category
 // Fetch the posts related to the fetched category
 const posts: Post[] = await sanityClient.fetch(`*[_type == "post" && references($categoryId)]{
   _id, title, slug, mainImage, description,
