@@ -2,8 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import logo from "../public/images/logo.png";
 import { useSession, signIn, signOut } from "next-auth/react";
+//import { client } from "../lib/client";
 
-const Header = () => {
+const Header = ({ categories }) => {
   const { data:session } = useSession();
 
   return (
@@ -17,9 +18,14 @@ const Header = () => {
         <div>
           <ul className=" lg:inline-flex gap-8 uppercase text-sm font-semibold">
             <li className="headerLi"><Link href="/">Home</Link></li>
-            <li className="headerLi">Beginners</li>
-            <li className="headerLi">Grow Your Blog</li>
-            <li className="headerLi">Work & Life</li>
+             {categories.map((category) => (
+          <li key={category._id} className="headerLi">
+            <Link href={`/category/${category.slug.current}`}>
+              {category.title}
+            </Link>
+          </li>
+        ))}
+
             <li className="headerLi">About Me</li>
             <li className="headerLi">Contact</li>
           </ul>

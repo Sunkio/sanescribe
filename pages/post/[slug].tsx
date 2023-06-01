@@ -9,12 +9,14 @@ import PortableText from "react-portable-text";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import category from '../../cms/schemas/category'
 
 
 interface Props {
     post: Post;
 }
-    type Inputs={
+
+type Inputs={
         _id: string;
         name: string;
         email: string;
@@ -52,7 +54,7 @@ const Post = ({post}: Props) => {
 
     return (
         <div>
-            <Header />
+            <Header categories={category}/>
             <img
                 alt={post.title}
                 src={urlFor(post.mainImage).url()!}

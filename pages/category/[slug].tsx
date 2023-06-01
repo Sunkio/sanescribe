@@ -1,41 +1,31 @@
-import Head from "next/head";
-import Image from "next/image";
-import Link from "next/link";
-import "slick-carousel/slick/slick.css";
-import Banner from "../components/Banner";
-import BannerBottom from "../components/BannerBottom";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import { sanityClient, urlFor } from "../sanity";
-import { Post, Category } from "../typings";
-import { client } from "../lib/client";
-
+import { useRouter } from 'next/router';
+import { sanityClient, urlFor } from '../../sanity';
+import { Category, Post } from '../../typings';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import Link from 'next/link';
+import Image from 'next/image';
+import { GetStaticPropsContext } from 'next';
+//import { client } from '../../lib/client';
 
 interface Props {
-    posts: Post[];
-    categories: Category[];
+  category: Category;
+  posts: Post[];
+  allCategories: Category[];
 }
 
-export default function Home({ posts, categories }: Props) {
-  return (
-    <div>
-      <Head>
-        <title>SaneScribe | A Next.JS Blog Template</title>
-        <link rel="icon" href="favicon.ico?v=2" />
-      </Head>
+const CategoryPage: React.FC<Props> = ({ posts, category, allCategories }: Props) => {
+   console.log("Posts for category:", posts);
+  const router = useRouter();
 
-      <main className="font-bodyFont">
-        {/* ============ Header Start here ============ */}
-        <Header categories={categories}/>
-        {/* ============ Header End here ============== */}
-        {/* ============ Banner Start here ============ */}
-        <Banner />
-        {/* ============ Banner End here ============== */}
-        <div className="max-w-7xl mx-auto h-60 relative">
-          <BannerBottom />
-        </div>
-        {/* ============ Banner-Bottom End here ======= */}
-        {/* ============ Post Part Start here ========= */}
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <>
+      <Header categories={allCategories} />
+      <h1>{category.title}</h1>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 py-6 px-4">
             {
                 posts.map((post) => (
@@ -68,38 +58,49 @@ export default function Home({ posts, categories }: Props) {
                 ))
             }
         </div>
-        {/* ============ Post Part End here =========== */}
-        {/* ============ Footer Start here============= */}
-        <Footer />
-        {/* ============ Footer End here ============== */}
-      </main>
-    </div>
+      <Footer />
+    </>
   );
+};
+
+export async function getStaticPaths() {
+  const categories = await sanityClient.fetch<Category[]>(`*[_type == "category"]`);
+  const paths = categories.map((category) => ({
+    params: { slug: category.slug.current },
+  }));
+
+  return {
+    paths,
+    fallback: true,
+  };
 }
 
-export const getServerSideProps = async () => {
-    const query = `*[_type == "post"] {
-      _id,
-        title,
-        author -> {
-          name,
-          image
-        },
-        description,
-        mainImage,
-        slug
-    }`;
-    const posts = await sanityClient.fetch(query);
+export async function getStaticProps(context: GetStaticPropsContext) {
+  const slug = context.params?.slug;
 
-    const categories = await client.fetch(`*[_type == "category"]{ title, description, slug, 
-      _id }`);
-    
-    console.log('Fetched categories:', categories);
+  // Fetch all categories
+  const allCategories: Category[] = await sanityClient.fetch(`*[_type == "category"]`);
 
-    return {
-        props: {
-            posts,
-            categories: categories || [],
-        },
-    }
+  // Fetch the category with the given slug
+  const category: Category = await sanityClient.fetch(`*[_type == "category" && slug.current == $slug][0]`, {
+    slug,
+  });
+
+  // Fetch the posts related to the fetched category
+// Fetch the posts related to the fetched category
+const posts: Post[] = await sanityClient.fetch(`*[_type == "post" && references($categoryId)]{
+  _id, title, slug, mainImage, description,
+  author-> {name, image}
+}`, { categoryId: category._id });
+
+  return {
+    props: {
+      allCategories,
+      category,
+      posts,
+    },
+    revalidate: 1,
+  };
 }
+
+export default CategoryPage;

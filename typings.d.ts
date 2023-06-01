@@ -16,7 +16,7 @@ export interface Post {
     slug: {
         current: string;
     };
-    body: [object];
+    body: Array<object>;
 }
 
 export interface Comment {
@@ -33,4 +33,13 @@ export interface Comment {
     _rev: string;
     _type: string;
     _updatedAt: string;
+}
+
+export interface Category {
+  _id: string;
+  title: string;
+  description: string;
+  slug: {
+    current: string;
+  };
 }
