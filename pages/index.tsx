@@ -4,6 +4,7 @@ import Link from "next/link";
 import "slick-carousel/slick/slick.css";
 import Banner from "../components/Banner";
 import BannerBottom from "../components/BannerBottom";
+import Meta from "../components/Meta";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { sanityClient, urlFor } from "../sanity";
@@ -19,23 +20,17 @@ interface Props {
 export default function Home({ posts, categories }: Props) {
   return (
     <div>
-      <Head>
+  {/*<Head>
         <title>SaneScribe | A Next.JS Blog Template</title>
         <link rel="icon" href="favicon.ico?v=2" />
-      </Head>
-
+      </Head>*/}
+      <Meta title="A Next.Js Blog Template" description="SaneScribe is a Next.JS blog template that uses Sanity.io as a headless CMS." />
       <main className="font-bodyFont">
-        {/* ============ Header Start here ============ */}
         <Header categories={categories}/>
-        {/* ============ Header End here ============== */}
-        {/* ============ Banner Start here ============ */}
         <Banner />
-        {/* ============ Banner End here ============== */}
         <div className="max-w-7xl mx-auto h-60 relative">
           <BannerBottom />
         </div>
-        {/* ============ Banner-Bottom End here ======= */}
-        {/* ============ Post Part Start here ========= */}
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 py-6 px-4">
             {
                 posts.map((post) => (
@@ -68,10 +63,7 @@ export default function Home({ posts, categories }: Props) {
                 ))
             }
         </div>
-        {/* ============ Post Part End here =========== */}
-        {/* ============ Footer Start here============= */}
         <Footer />
-        {/* ============ Footer End here ============== */}
       </main>
     </div>
   );

@@ -1,3 +1,4 @@
+import Meta from "../../components/Meta";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import Image from "next/image";
@@ -53,6 +54,7 @@ const Post = ({post, categories}: Props) => {
 
     return (
         <div>
+          <Meta title={post.title} description={post.description} />
             <Header categories={categories}/>
             <img
                 alt={post.title}

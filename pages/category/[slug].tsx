@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { sanityClient, urlFor } from '../../sanity';
 import { Category, Post } from '../../typings';
+import Meta from '../../components/Meta';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Link from 'next/link';
@@ -30,6 +31,7 @@ const CategoryPage: React.FC<Props> = ({ posts, category, allCategories }: Props
 
   return (
     <>
+      <Meta title={category.title} description={category.description} />
       <Header categories={allCategories || []} />
       <h1>{category.title}</h1>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 py-6 px-4">
